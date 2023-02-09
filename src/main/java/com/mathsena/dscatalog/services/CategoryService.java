@@ -3,6 +3,7 @@ package com.mathsena.dscatalog.services;
 import com.mathsena.dscatalog.model.Category;
 import com.mathsena.dscatalog.model.dto.CategoryDTO;
 import com.mathsena.dscatalog.repositories.CategoryRepository;
+import com.mathsena.dscatalog.services.exceptions.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -31,7 +32,7 @@ public class CategoryService {
     @Transactional(readOnly = true)
     public CategoryDTO findByid(Long id) {
         Optional<Category> obj = repository.findById(id);
-        Category entity = obj.get();
+        Category entity = obj.orElseThrow(()->new EntityNotFoundException("Category not found"));
         return new CategoryDTO(entity);
     }
 }
