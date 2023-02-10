@@ -3,9 +3,12 @@ package com.mathsena.dscatalog.services;
 import com.mathsena.dscatalog.model.Category;
 import com.mathsena.dscatalog.model.dto.CategoryDTO;
 import com.mathsena.dscatalog.repositories.CategoryRepository;
+import com.mathsena.dscatalog.services.exceptions.DataBaseException;
 import com.mathsena.dscatalog.services.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +59,19 @@ public class CategoryService {
         } catch (EntityNotFoundException e){
             throw new ResourceNotFoundException("id not found" + id);
 
+        }
+
+    }
+
+    public void delete(Long id) {
+        try{
+            repository.deleteById(id);
+
+        }catch (EmptyResultDataAccessException e){
+            throw new ResourceNotFoundException("id not found for deletion " + id);
+        }
+        catch (DataIntegrityViolationException e){
+            throw new DataBaseException("You can't delete this id because this id have a Integrity violation" + id);
         }
 
     }
